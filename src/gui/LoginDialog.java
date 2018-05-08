@@ -1,6 +1,9 @@
 package gui;
 
 import javafx.scene.text.Text;
+import Data.AppState;
+import Data.User;
+import DataProvider.IUserDataProvider;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,16 +43,36 @@ public class LoginDialog implements EventHandler<ActionEvent> {
     
     public Stage window;
 	
+    TextField usernameTextField;
+    PasswordField passwordTextField;
+    
 	public LoginDialog(Stage owner) {
 		
 		window = owner;
 		
-		
+		VBox welcomePane = new VBox();
+        VBox contentPane = new VBox();  // probably there is a nicer solution to this
+        contentPane.setId("content-pane");
+        
+        Text t = new Text();
+        t.setText("Welcome to COMPLETE");
+//	        contentPane.add(t, 0, 2);
+        contentPane.getChildren().add(t);
+        contentPane.setMinSize(400, 100);
+        
+        welcomePane = new VBox();
+        welcomePane.setId("welcome-pane");
+        welcomePane.getChildren().addAll(contentPane);
+        welcomePane.setAlignment(Pos.CENTER);
+        welcomePane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
+
+	
 		// add buttons
 		loginButton = createTextButton("button-login", "Login");
         loginButton.setOnAction(this);
         
         registerButton = createTextButton("button-register", "Register");   
+        registerButton.setOnAction(this);
         
         VBox buttonPane = new VBox();
         buttonPane.setId("button-pane");
@@ -61,7 +84,7 @@ public class LoginDialog implements EventHandler<ActionEvent> {
         
         Label usernameLabel = new Label("Username");
         usernameLabel.setAlignment(Pos.CENTER_LEFT);
-        TextField usernameTextField = new TextField ();
+        usernameTextField = new TextField ();
         usernameTextField.setPromptText("enter e-mail adress");
         VBox usernameInput = new VBox();
         usernameInput.getChildren().addAll(usernameLabel, usernameTextField);
@@ -70,7 +93,7 @@ public class LoginDialog implements EventHandler<ActionEvent> {
         
         Label passwordLabel = new Label("Password");
         passwordLabel.setAlignment(Pos.CENTER_LEFT);
-        PasswordField passwordTextField = new PasswordField();
+        passwordTextField = new PasswordField();
         passwordTextField.setPromptText("enter password");
         VBox pwInput = new VBox();
         pwInput.getChildren().addAll(passwordLabel, passwordTextField);
@@ -81,14 +104,11 @@ public class LoginDialog implements EventHandler<ActionEvent> {
         credentialsPane.setId("credentials-pane");
         
         credentialsPane.getChildren().addAll(usernameInput, pwInput, buttonPane);
-//        credentialsPane.getChildren().add(pwInput);
-//        credentialsPane.getChildren().add(buttonPane);
         
         credentialsPane.setBackground( new Background( new BackgroundFill(Color.CORNSILK, null, null)));
         credentialsPane.setAlignment(Pos.CENTER);
-//        credentialsPane.setMaxWidth(200);
 		
-		Scene loginScene = new Scene(credentialsPane);
+		Scene loginScene = new Scene(new VBox(welcomePane, credentialsPane));
 		
 		LoginStage.setScene(loginScene);
         LoginStage.initModality(Modality.WINDOW_MODAL);
@@ -100,48 +120,37 @@ public class LoginDialog implements EventHandler<ActionEvent> {
 	}
 	
 	public void show() {
+		LoginStage.setTitle("Login");
 		LoginStage.show();
 	}
 	
-	
-//	UserOverview ov = new UserOverview(window);
-//    ov.show();
 
 	@Override
 	public void handle(ActionEvent event) {
 		try {
 			if ( ((Button) event.getSource()).getId().equals("button-login") ) {
-				UserOverview ov = new UserOverview(window);
-			    ov.show();
-			    LoginStage.close();
+				System.out.println("Login button pressed");
+				IUserDataProvider db = AppState.getInstance().getDatabase();
+				
+				if (db.authenticateUser(usernameTextField.getText(), passwordTextField.getText())) {
+					User u = db.getUserByUsername(usernameTextField.getText());
+					AppState.getInstance().setUser(u);
+					UserOverview ov = new UserOverview(window);
+				    ov.show();
+				    LoginStage.close();
+				    if (AppState.getInstance().isUserLoggedIn())
+				    	System.out.println("hes logged in...OMG");
+				}
+			    
+			} else if ( ((Button) event.getSource()).getId().equals("button-register") ) {
+				System.out.println("Register button pressed");
+				RegistrationStage rs = new RegistrationStage(window);
+				rs.show();
+				LoginStage.close();
+			
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+
 		}
 	}
-	
-	//	@Override
-//    public void handle(ActionEvent event) {
-//        try {
-//            if (((Button) event.getSource()).getId().equals("ok-button")) {
-//                ICompleteDataProvider db = AppState.getInstance().getDatabase();
-//                if (db.authenticateUser(usernameField.getText(), passwordField.getText())) {
-//                    User u = db.getUserByUsername(usernameField.getText());
-//                    System.out.println("'LoginDialog', login succeesful with username = " + usernameField.getText() + "   password = " + passwordField.getText());
-//
-//                    AppState.getInstance().setUser(u);
-//                    loginStage.hide();
-//                } else {
-//                    System.out.println("'LoginDialog', login failed with username = " + usernameField.getText() + "   password = " + passwordField.getText());
-//
-//                }
-//            }
-//            
-//        } catch (NumberFormatException ex) {
-//            System.out.println("'LoginDialog', login failed with username = " + usernameField.getText() + "   password = " + passwordField.getText());
-////            segmentLengthField
-////                    .setStyle("-fx-border-color: red; " + "-fx-border-width: 2px; " + "-fx-border-radius: 3px;");
-//        }
-//
-//    }
 }

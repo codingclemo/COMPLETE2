@@ -1,5 +1,7 @@
 package gui;
 import javafx.scene.text.Text;
+import Data.AppState;
+import Data.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,21 +30,34 @@ public class UserOverview {
 
 	Stage UserStage = new Stage();
 	
+	public Scene overview;
+	
 	public HBox framePane;
 	public VBox userInfo;
-	public HBox userDetails;
+	public GridPane userDetails;
 	public VBox userStatistics;
 	public VBox interactionPane;
 	
 	public UserOverview(Window owner) {
 		framePane = new HBox();
 		userInfo = new VBox();
-		userDetails = new HBox();
+		userDetails = new GridPane();
 		userStatistics = new VBox();
 		interactionPane = new VBox();
 		
+		// add user information to user Details
+		User u = AppState.getInstance().getUser();
+		userDetails.add(new Text(u.getUsername()), 0, 0);
+		userDetails.add(new Text("id: " + u.getUserID()), 0, 1);
+		userDetails.add(new Text("from: " + u.getRegionID()), 0, 2);
+		
+		userDetails.setMinWidth(100);
+		userDetails.setPadding(new Insets(50, 100, 50, 100));
+		
 		// add ListView to display Stickers that are available for trading
 		ListView<String> availableStickers = new ListView<String>();
+		
+		// get userData for stickers
 		ObservableList<String> items = FXCollections.observableArrayList(
 				"Ronaldo", "Pele", "Alaba", "Hummels", "Arnautovic");
 		availableStickers.setItems(items);
@@ -51,23 +66,19 @@ public class UserOverview {
 		
 		interactionPane.getChildren().add(availableStickers);
 		
-		// add user information to user Details
-
 		userInfo.getChildren().add(userDetails);
 		userInfo.getChildren().add(userStatistics);
 		framePane.getChildren().add(userInfo);
 		framePane.getChildren().add(interactionPane);
         
         
-		Scene overview = new Scene(framePane);
+		overview = new Scene(framePane);
 		
 		UserStage.setScene(overview);
-//		UserStage.initModality(Modality.WINDOW_MODAL);
-//		UserStage.initStyle(StageStyle.UTILITY);
-		UserStage.setMinHeight(400);
-		UserStage.setMinWidth(400);
+		UserStage.setMinHeight(500);
+		UserStage.setMinWidth(800);
 		UserStage.initOwner(owner);
-//        UserStage.setResizable(false);
+        UserStage.setResizable(false);
 	}
 	
 	public void show() {
