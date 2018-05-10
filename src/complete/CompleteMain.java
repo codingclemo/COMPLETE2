@@ -3,7 +3,6 @@ package complete;
 import Data.AppState;
 import DataProvider.UserDataProvider;
 import gui.LoginDialog;
-import gui.LoginPane;
 import gui.UserOverview;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,34 +22,6 @@ public class CompleteMain extends Application {
     public Scene registrationScene;
     
     
-    
-    private MenuBar createMenuBar(Stage stage) {
-        // PreferencesDialog dialog = new PreferencesDialog(stage);
-
-        // my cards
-        MenuItem myCardsItem = new MenuItem("My Cards");
-        MenuItem marketplaceItem = new MenuItem("Marketplace");
-        // prefItem.setOnAction(e -> mycards.show());
-        MenuItem exitItem = new MenuItem("Exit ");
-
-        Menu completeMenu = new Menu("Complete");
-        completeMenu.getItems().add(myCardsItem);
-        completeMenu.getItems().add(marketplaceItem);
-        completeMenu.getItems().add(exitItem);
-
-        // close the application when exit is clicked
-        exitItem.setOnAction(e -> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(completeMenu);
-
-        return menuBar;
-    }
-    
-    
     @Override
     public void start(Stage primaryStage) throws Exception { // changed to priStage from primaryStage
         
@@ -62,6 +33,7 @@ public class CompleteMain extends Application {
         
         LoginDialog loginDialog = new LoginDialog(window);
         loginDialog.show();
+        
  
     }
 

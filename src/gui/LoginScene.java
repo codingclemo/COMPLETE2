@@ -27,8 +27,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-
-public class LoginDialog implements EventHandler<ActionEvent> {
+public class LoginScene implements EventHandler<ActionEvent> {
+//public class LoginDialog implements EventHandler<ActionEvent> {
 
 	Stage LoginStage = new Stage();
 	
@@ -48,7 +48,9 @@ public class LoginDialog implements EventHandler<ActionEvent> {
     private TextField usernameTextField;
     private PasswordField passwordTextField;
     
-	public LoginDialog(Stage stage) {
+    private Scene loginScene;
+    
+	public LoginScene(Stage stage) {
 		
 //		window = stage;
 		
@@ -110,17 +112,25 @@ public class LoginDialog implements EventHandler<ActionEvent> {
         credentialsPane.setBackground( new Background( new BackgroundFill(Color.CORNSILK, null, null)));
         credentialsPane.setAlignment(Pos.CENTER);
 		
-		Scene loginScene = new Scene(new VBox(welcomePane, credentialsPane));		
+		loginScene = new Scene(new VBox(welcomePane, credentialsPane));		
 		
-		LoginStage.setScene(loginScene);
-        LoginStage.initModality(Modality.WINDOW_MODAL);
-        LoginStage.initStyle(StageStyle.UTILITY);
-        LoginStage.setMinHeight(400);
-        LoginStage.setMinWidth(400);
-        LoginStage.initOwner(stage);
-        LoginStage.setResizable(false);
-        
-        window = stage;
+//		LoginStage.setScene(loginScene);
+//        LoginStage.initModality(Modality.WINDOW_MODAL);
+//        LoginStage.initStyle(StageStyle.UTILITY);
+//        LoginStage.setMinHeight(400);
+//        LoginStage.setMinWidth(400);
+//        LoginStage.initOwner(stage);
+//        LoginStage.setResizable(false);
+//        
+//        window = stage;
+	}
+	
+	public void setScene(Stage stage) {
+		
+	}
+	
+	public Scene getScene() {
+		return loginScene;
 	}
 	
 	public void show() {
@@ -140,6 +150,7 @@ public class LoginDialog implements EventHandler<ActionEvent> {
 					User u = db.getUserByUsername(usernameTextField.getText());
 					AppState.getInstance().setUser(u);
 					UserOverview ov = new UserOverview(window);
+					
 				    ov.show();
 				    LoginStage.close();
 				    if (AppState.getInstance().isUserLoggedIn())

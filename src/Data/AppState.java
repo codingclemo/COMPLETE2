@@ -4,9 +4,8 @@ import DataProvider.IUserDataProvider;
 
 public final class AppState {
 
-	 private static final AppState instance = new AppState(); // singleton
+	 private static final AppState instance = new AppState();
 	 
-	    // if a user is logged in, then here is the data
 	    private User user;
 	    private IUserDataProvider db; 
 	    

@@ -16,6 +16,12 @@ public class User {
 	private int[] stickersAvailable = new int[10];
 	private int[] stickersNeeded = new int[10];
 	
+//	public User() {
+//        this.username = null; 
+//        this.password = null; // some hash magic needs to be added here
+//        this.userID = -1;
+//        this.regionID = -1;
+//	}
 	
     public User(int id, String username, String password, int regionID) {
         this.username = username; 

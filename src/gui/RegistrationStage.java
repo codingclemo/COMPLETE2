@@ -34,6 +34,21 @@ public class RegistrationStage implements EventHandler<ActionEvent> {
 	Stage registrationStage = new Stage();
 	public Scene regScene;
 	
+	String username;
+	String pw;
+	int regionID;
+	
+	
+    TextField fnTextField;
+    TextField lnTextField;
+    TextField usernameTextField;
+    PasswordField passwordTextField;
+    TextField adressTextField;
+    TextField cityTextField;
+    TextField regionTextField;
+    TextField countryTextField;  
+	
+    
 	public RegistrationStage(Stage owner) {
 		
 		window = owner;
@@ -59,31 +74,31 @@ public class RegistrationStage implements EventHandler<ActionEvent> {
         registrationForm.setBackground(new Background ( new BackgroundFill(Color.BEIGE, null, null)));
     
         Label fnLabel = new Label("First name");
-        TextField fnTextField = new TextField ();
+        fnTextField = new TextField ();
         
         Label lnLabel = new Label("Last name");
-        TextField lnTextField = new TextField ();
+        lnTextField = new TextField ();
         
         Label usernameLabel = new Label("E-Mail");
-        TextField usernameTextField = new TextField ();
+        usernameTextField = new TextField ();
         
         Label passwordLabel = new Label("Password");
-//	      passwordLabel.setAlignment(Pos.CENTER_LEFT);
-        PasswordField passwordTextField = new PasswordField();
-//	      passwordTextField.setPromptText("enter password");
+        passwordTextField = new PasswordField();
         
         Label adressLabel = new Label("Adress");
-        TextField adressTextField = new TextField ();
+        adressTextField = new TextField ();
         
         Label cityLabel = new Label("City");
-        TextField cityTextField = new TextField (); 
+        cityTextField = new TextField (); 
         
         Label regionLabel = new Label("Region");
-        TextField regionTextField = new TextField ();   
+        regionTextField = new TextField ();   
         
         Label countryLabel = new Label("Country");
-        TextField countryTextField = new TextField ();  
+        countryTextField = new TextField ();  
 
+        
+        
 
         registrationForm.add(fnLabel,           0, 0);
         registrationForm.add(fnTextField,       1, 0);
@@ -118,6 +133,7 @@ public class RegistrationStage implements EventHandler<ActionEvent> {
         registrationForm.setMaxWidth(400);
         
         nextButton = new Button("Next"); nextButton.setId("button-next"); 
+        nextButton.setOnAction(this);
         backButton = new Button("Back"); backButton.setId("button-back");
         backButton.setOnAction(this);
 //        backButton.setOnAction(e -> window.setScene(loginScene));
@@ -150,20 +166,63 @@ public class RegistrationStage implements EventHandler<ActionEvent> {
 	}
 	
 	
+	private void registerUser() {
+		
+	}
+	
 	@Override
 	public void handle(ActionEvent event) {
 		try {
 			if ( ((Button) event.getSource()).getId().equals("button-back") ) {
-
-				
 					LoginDialog ld = new LoginDialog(window);
 					ld.show();
 					registrationStage.close();
-					
-//					UserOverview ov = new UserOverview(window);
-//				    ov.show();
-//				    LoginStage.close();
-  
+			} else if ( ((Button) event.getSource()).getId().equals("button-next") ) {
+		
+				
+//				// TODO: addUser to db
+				System.out.println("Next button pressed");
+				
+				IUserDataProvider db = AppState.getInstance().getDatabase();
+				
+				if (db.authenticateUser("Moh", "a")) {
+					User u = db.getUserByUsername("Moh");
+					AppState.getInstance().setUser(u);
+					UserOverview ov = new UserOverview(window);
+				    ov.show();
+				    registrationStage.close();
+				    if (AppState.getInstance().isUserLoggedIn())
+				    	System.out.println("hes logged in...OMG");
+				}
+				
+				UserOverview uo = new UserOverview(window);
+				window.setScene(uo.getScene());
+//				registrationStage.close();
+				
+				
+//				IUserDataProvider db = AppState.getInstance().getDatabase();
+//				
+//				User newUser = db.getUserByUsername(usernameTextField.getText());
+//				if (newUser != null) {
+//					System.out.println("User '"+ usernameTextField.getText() + "' already exists. Please use a different username.");
+//				} else {
+//
+//					if ( db.addUser(usernameTextField.getText(), passwordTextField.getText(), Integer.parseInt(regionTextField.getText())) ) {
+//						System.out.println("New user '" + usernameTextField.getText() + "' registered.");
+//						
+//						User u = db.getUserByUsername(usernameTextField.getText());
+//						AppState.getInstance().setUser(u);
+//						
+//						UserOverview ov = new UserOverview(window);
+//					    ov.show();
+//					    registrationStage.close();
+//					    if (AppState.getInstance().isUserLoggedIn())
+//					    	System.out.println("hes registered and logged in...OMG");
+//						
+//					} else {
+//						System.out.println("User '" + usernameTextField.getText() + "' could not be registered.");
+//					}
+//				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -10,7 +10,7 @@ import Data.User;
 
 public class UserDataProvider implements IUserDataProvider{
 	
-	int userID = 0;
+	private int userID = 0;
 	TreeMap<String, User> userTable = new TreeMap<>();
 	
 	Stickers stickerDB = new Stickers();
