@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-public class LoginScene implements EventHandler<ActionEvent> {
+public class LoginScene {
 //public class LoginDialog implements EventHandler<ActionEvent> {
 
 	Stage LoginStage = new Stage();
@@ -48,15 +48,17 @@ public class LoginScene implements EventHandler<ActionEvent> {
     private TextField usernameTextField;
     private PasswordField passwordTextField;
     
-    private Scene loginScene;
+    private Scene scene;
     
 	public LoginScene(Stage stage) {
 		
 //		window = stage;
-		
+		VBox rootPane = new VBox();
 		VBox welcomePane = new VBox();
         VBox contentPane = new VBox();  // probably there is a nicer solution to this
         contentPane.setId("content-pane");
+        rootPane.getChildren().addAll(welcomePane, contentPane);
+        scene = new Scene(rootPane);		
         
         Text t = new Text();
         t.setText("Welcome to COMPLETE");
@@ -64,7 +66,7 @@ public class LoginScene implements EventHandler<ActionEvent> {
         contentPane.getChildren().add(t);
         contentPane.setMinSize(400, 100);
         
-        welcomePane = new VBox();
+//        welcomePane = new VBox();
         welcomePane.setId("welcome-pane");
         welcomePane.getChildren().addAll(contentPane);
         welcomePane.setAlignment(Pos.CENTER);
@@ -73,10 +75,29 @@ public class LoginScene implements EventHandler<ActionEvent> {
 	
 		// add buttons
 		loginButton = createTextButton("button-login", "Login");
-        loginButton.setOnAction(this);
+//        loginButton.setOnAction(this);
+	    loginButton.setOnAction( e -> {
+	    	System.out.println("Login button pressed");
+			IUserDataProvider db = AppState.getInstance().getDatabase();
+			
+			if (db.authenticateUser(usernameTextField.getText(), passwordTextField.getText())) {
+				User u = db.getUserByUsername(usernameTextField.getText());
+				AppState.getInstance().setUser(u);
+//				UserOverview ov = new UserOverview(stage);
+				stage.setScene( new UserOverview(stage).getScene());
+			    if (AppState.getInstance().isUserLoggedIn())
+			    	System.out.println("hes logged in...OMG");
+			}
+	    });
+        
         
         registerButton = createTextButton("button-register", "Register");   
-        registerButton.setOnAction(this);
+        registerButton.setOnAction( e -> {
+	    	System.out.println("Login button pressed");
+			IUserDataProvider db = AppState.getInstance().getDatabase();
+			
+			stage.setScene( new RegisterScene(stage).getScene());
+	    });
         
         VBox buttonPane = new VBox();
         buttonPane.setId("button-pane");
@@ -111,8 +132,8 @@ public class LoginScene implements EventHandler<ActionEvent> {
         
         credentialsPane.setBackground( new Background( new BackgroundFill(Color.CORNSILK, null, null)));
         credentialsPane.setAlignment(Pos.CENTER);
+		contentPane.getChildren().add(credentialsPane);
 		
-		loginScene = new Scene(new VBox(welcomePane, credentialsPane));		
 		
 //		LoginStage.setScene(loginScene);
 //        LoginStage.initModality(Modality.WINDOW_MODAL);
@@ -125,47 +146,40 @@ public class LoginScene implements EventHandler<ActionEvent> {
 //        window = stage;
 	}
 	
-	public void setScene(Stage stage) {
-		
-	}
 	
 	public Scene getScene() {
-		return loginScene;
-	}
-	
-	public void show() {
-		LoginStage.setTitle("Login");
-		LoginStage.show();
-	}
-	
-
-	@Override
-	public void handle(ActionEvent event) {
-		try {
-			if ( ((Button) event.getSource()).getId().equals("button-login") ) {
-				System.out.println("Login button pressed");
-				IUserDataProvider db = AppState.getInstance().getDatabase();
-				
-				if (db.authenticateUser(usernameTextField.getText(), passwordTextField.getText())) {
-					User u = db.getUserByUsername(usernameTextField.getText());
-					AppState.getInstance().setUser(u);
-					UserOverview ov = new UserOverview(window);
-					
-				    ov.show();
-				    LoginStage.close();
-				    if (AppState.getInstance().isUserLoggedIn())
-				    	System.out.println("hes logged in...OMG");
-				}
-			    
-			} else if ( ((Button) event.getSource()).getId().equals("button-register") ) {
-				System.out.println("Register button pressed");
-				RegistrationStage rs = new RegistrationStage(window);
-				rs.show();
-				LoginStage.close();
-			
-			}
-		} catch (Exception e) {
-
-		}
+		return scene;
 	}
 }
+	
+//
+//	@Override
+//	public void handle(ActionEvent event) {
+//		try {
+//			if ( ((Button) event.getSource()).getId().equals("button-login") ) {
+////				System.out.println("Login button pressed");
+////				IUserDataProvider db = AppState.getInstance().getDatabase();
+////				
+////				if (db.authenticateUser(usernameTextField.getText(), passwordTextField.getText())) {
+////					User u = db.getUserByUsername(usernameTextField.getText());
+////					AppState.getInstance().setUser(u);
+////					UserOverview ov = new UserOverview(window);
+////					
+////				    ov.show();
+////				    LoginStage.close();
+////				    if (AppState.getInstance().isUserLoggedIn())
+////				    	System.out.println("hes logged in...OMG");
+////				}
+//			    
+//			} else if ( ((Button) event.getSource()).getId().equals("button-register") ) {
+//				System.out.println("Register button pressed");
+//				RegistrationStage rs = new RegistrationStage(window);
+//				rs.show();
+//				LoginStage.close();
+//			
+//			}
+//		} catch (Exception e) {
+//
+//		}
+//	}
+//}
