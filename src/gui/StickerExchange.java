@@ -2,12 +2,15 @@ package gui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class StickerExchange {
-	Scene scene;
+	private Scene scene;
 	
 	public StickerExchange(Stage stage) {
 		
@@ -20,7 +23,7 @@ public class StickerExchange {
 		
 		// add content
 		rootPane.getChildren().add(new Text("Welcome to the Sticker Exchange"));
-		
+		rootPane.setBackground( new Background( new BackgroundFill(Color.AQUAMARINE, null, null)));
 		
 	}
 	

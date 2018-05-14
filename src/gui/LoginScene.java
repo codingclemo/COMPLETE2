@@ -70,12 +70,13 @@ public class LoginScene {
         welcomePane.setId("welcome-pane");
         welcomePane.getChildren().addAll(contentPane);
         welcomePane.setAlignment(Pos.CENTER);
-        welcomePane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
+//        welcomePane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
 
 	
 		// add buttons
 		loginButton = createTextButton("button-login", "Login");
 //        loginButton.setOnAction(this);
+		loginButton.setDefaultButton(true);
 	    loginButton.setOnAction( e -> {
 	    	System.out.println("Login button pressed");
 			IUserDataProvider db = AppState.getInstance().getDatabase();
@@ -84,7 +85,7 @@ public class LoginScene {
 				User u = db.getUserByUsername(usernameTextField.getText());
 				AppState.getInstance().setUser(u);
 //				UserOverview ov = new UserOverview(stage);
-				stage.setScene( new UserOverview(stage).getScene());
+				stage.setScene( new UserOverviewScene(stage).getScene());
 			    if (AppState.getInstance().isUserLoggedIn())
 			    	System.out.println("hes logged in...OMG");
 			}
@@ -105,7 +106,7 @@ public class LoginScene {
         buttonPane.getChildren().add(registerButton);
         buttonPane.setAlignment(Pos.CENTER);
         buttonPane.setSpacing(10);
-        buttonPane.setBackground(new Background ( new BackgroundFill(Color.BURLYWOOD, null, null)));
+//        buttonPane.setBackground(new Background ( new BackgroundFill(Color.BURLYWOOD, null, null)));
         
         Label usernameLabel = new Label("Username");
         usernameLabel.setAlignment(Pos.CENTER_LEFT);
@@ -130,7 +131,7 @@ public class LoginScene {
         
         credentialsPane.getChildren().addAll(usernameInput, pwInput, buttonPane);
         
-        credentialsPane.setBackground( new Background( new BackgroundFill(Color.CORNSILK, null, null)));
+//        credentialsPane.setBackground( new Background( new BackgroundFill(Color.CORNSILK, null, null)));
         credentialsPane.setAlignment(Pos.CENTER);
 		contentPane.getChildren().add(credentialsPane);
 		

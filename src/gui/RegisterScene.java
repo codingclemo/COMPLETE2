@@ -12,7 +12,10 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -134,22 +137,32 @@ public class RegisterScene{
         
         nextButton = new Button("Next"); nextButton.setId("button-next"); 
         nextButton.setOnAction( e -> {
-        	// TODO: addUser to db
 			System.out.println("Next button pressed");
 			
 			IUserDataProvider db = AppState.getInstance().getDatabase();
 			
-			if (db.authenticateUser("Moh", "a")) {
-				User u = db.getUserByUsername("Moh");
-				AppState.getInstance().setUser(u);
-//				UserOverview ov = new UserOverview(window);
-//			    ov.show();
-//			    registrationStage.close();
-				
-				stage.setScene(new UserOverviewScene(stage).getScene());
-				
-			    if (AppState.getInstance().isUserLoggedIn())
-			    	System.out.println("hes logged in...OMG");
+			// check if user exists
+			// if user exists -> error
+			// else
+			// add new user to db
+			// set user to this new user //get by username
+			try {
+				if (db.getUserByUsername(usernameTextField.getText()) != null) {
+					//error
+					Alert alert = new Alert(AlertType.ERROR, "username already taken", ButtonType.CANCEL);
+					alert.showAndWait();
+				} else if (usernameTextField.getText() == "" || passwordTextField.getText() == "" || regionTextField.getText() == "") {
+					Alert alert = new Alert(AlertType.ERROR, "username is empty", ButtonType.CANCEL);
+					alert.showAndWait();
+				} else {
+					db.addUser(usernameTextField.getText(), passwordTextField.getText(), Integer.parseInt(regionTextField.getText()));
+					User u = db.getUserByUsername(usernameTextField.getText());
+					AppState.getInstance().setUser(u);
+					db.printData();
+					stage.setScene(new UserOverviewScene(stage).getScene());
+				}
+			} catch (NumberFormatException e2) {
+				// TODO: handle exception
 			}
 
 			

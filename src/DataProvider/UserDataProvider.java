@@ -7,14 +7,17 @@ import java.util.TreeMap;
 import Data.Sticker;
 import Data.Stickers;
 import Data.User;
+import Tables.StickerTable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class UserDataProvider implements IUserDataProvider{
 	
 	private int userID = 0;
-	TreeMap<String, User> userTable = new TreeMap<>();
-	
-	Stickers stickerDB = new Stickers();
-	
+	private TreeMap<String, User> userTable = new TreeMap<>();
+	private ObservableList<StickerTable> dummyStickerData;  // to load in TableView for Stickers
+	private ArrayList<StickerTable> stickerDB = new ArrayList<>();
+
 	public UserDataProvider() {
 		createDummyData();
 	}
@@ -61,27 +64,54 @@ public class UserDataProvider implements IUserDataProvider{
     	addUser("Manuel", "a", 0);
     	addUser("Flo", "a", 0);
     	
-    	User dummy = this.getUserByUsername("Moh");
-//    	dummy.stickersAvailable.add(0);
-//    	dummy.stickersAvailable.add(0);
-//    	dummy.stickersAvailable.add(2);
-//    	dummy.stickersAvailable.add(2);
-//    	dummy.stickersAvailable.add(2);
-//    	dummy.stickersAvailable.add(s);
+    	userTable.get("Moh").addStickerAvailable(1);
+    	userTable.get("Moh").addStickerAvailable(1);
+    	userTable.get("Moh").addStickerAvailable(3);
+    	userTable.get("Moh").addStickerAvailable(4);
+    	userTable.get("Moh").addStickerAvailable(4);
+    	userTable.get("Moh").addStickerAvailable(4);
     	
-    	Sticker s0 = new Sticker(0, 0, "David Alaba");
-    	Sticker s1 = new Sticker(1, 1, "Zlatan Ibrahimovic");
-    	Sticker s2 = new Sticker(2, 1, "This Otherguy");
-    	Sticker s3 = new Sticker(3, 2, "Player Number3");
-    	Sticker s4 = new Sticker(4, 2, "Also Team2");
-    	stickerDB.add(s0);
-    	stickerDB.add(s1);
-    	stickerDB.add(s2);
-    	stickerDB.add(s3);
-    	stickerDB.add(s4);
+    	userTable.get("Albi").addStickerAvailable(1);
     	
+    	createStickerDB();
+
     }
-	
+    
+    private void createStickerDB() {
+    	stickerDB.add( new StickerTable(0, "Zero", "Placeholder", 0) );
+    	stickerDB.add( new StickerTable(1, "Austria", "Alaba", 0) );
+    	stickerDB.add( new StickerTable(2, "Austria", "Arnautovic", 0) );
+    	stickerDB.add( new StickerTable(3, "Assabaidschan", "Radovanovic", 0) );
+    	stickerDB.add( new StickerTable(4, "Ästland", "Ave", 0) );
+    	stickerDB.add( new StickerTable(5, "Fronkreich", "Jean-Paul", 0) );
+    	stickerDB.add( new StickerTable(6, "asasfad", "Alaba", 0) );
+    	stickerDB.add( new StickerTable(7, "asdasffaa", "Arnautovic", 0) );
+    	stickerDB.add( new StickerTable(8, "Assaabaidschan", "Radovanovic", 0) );
+    	stickerDB.add( new StickerTable(9, "asd", "Ave", 0) );
+//    	stickerDB.add( new StickerTable(10, "fsfa", "Jean-Paul", 0) );
+    }
+    
+    public ObservableList<StickerTable> getObservableStickers(int[] stickerArray) {
+    	ObservableList<StickerTable> stickerList = FXCollections.observableArrayList();
+    	for (int i = 0; i < stickerArray.length; i++) {
+    		if (stickerArray[i] != 0) {
+    			StickerTable st = stickerDB.get(i);
+//    			st.setAmount(stickerArray[i]);
+    			stickerList.add(st);
+  
+    		}
+    	}
+    	return stickerList;
+    }
+    
+    public ObservableList<StickerTable> getDummyStickerData(){
+    	return dummyStickerData;
+    }
+    
+    public void removeSticker(int stickerID) {
+    	dummyStickerData.get(stickerID).decreaseAmount();
+    }
+    
     public void printData() {
     	System.out.println("db contains: ");
     	for(Map.Entry<String, User> i: userTable.entrySet()) {

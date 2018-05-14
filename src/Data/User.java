@@ -96,6 +96,14 @@ public class User {
 		return stickersNeeded;
 	}
 	
+	public void setStickersAvailable() {
+		AppState.getInstance().getDatabase().getDummyStickerData();
+	}
+	
+	public void setStickersNeeded() {
+		
+	}
+	
 	//TODO: Add getters and setters for optional fields (fn, ln, country...)
 
 

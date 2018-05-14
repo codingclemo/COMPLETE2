@@ -2,10 +2,11 @@ package complete;
 
 import Data.AppState;
 import DataProvider.UserDataProvider;
-import gui.LoginDialog;
+//import gui.LoginDialog;
 import gui.LoginScene;
 import gui.StickerExchange;
-import gui.UserOverview;
+//import gui.UserOverview;
+import gui.UserOverviewScene;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -36,6 +37,10 @@ public class CompleteMain extends Application {
 //        LoginDialog loginDialog = new LoginDialog(window);
 //        loginDialog.show();
 
+//    	primaryStage.setScene(new StickerExchange(primaryStage).getScene());
+    	
+    	
+    	primaryStage.setScene(new UserOverviewScene(primaryStage).getScene());
     	primaryStage.setScene(new LoginScene(primaryStage).getScene());
         primaryStage.setMinWidth(400);
         primaryStage.setMinHeight(400);
@@ -50,6 +55,7 @@ public class CompleteMain extends Application {
     	AppState.getInstance().setDatabase(udp);
     	udp.createDummyData();
     	udp.printData();
+//    	udp.authenticateUser("Moh", "a");
     	
         launch(args);
     }

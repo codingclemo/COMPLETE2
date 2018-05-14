@@ -1,6 +1,8 @@
 package DataProvider;
 
 import Data.User;
+import Tables.StickerTable;
+import javafx.collections.ObservableList;
 
 public interface IUserDataProvider {
 
@@ -10,5 +12,11 @@ public interface IUserDataProvider {
     public boolean authenticateUser(String username, String password);
     
     public void createDummyData();
+//    public void createDummyStickerData();
+    public ObservableList<StickerTable> getDummyStickerData();
+    public void removeSticker(int stickerID);  // needs refactoring
+    public ObservableList<StickerTable> getObservableStickers(int[] stickerArray);
+    
+    
     public void printData();
 }

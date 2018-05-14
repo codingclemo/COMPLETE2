@@ -19,17 +19,24 @@ public class MainMenu {
 	    completeMenu.getItems().add(StickerExchange);
 	
 	
-//	    myProfile.setOnAction( e -> {
+	    myProfile.setOnAction( e -> {
 //	    	Scene uoScene = new UserOverview(stage).getScene();
-//	    	stage.setScene(uoScene);
-//	    	System.out.println("Set scene My Profile");
-//	    });
-//	    
-//	    StickerExchange.setOnAction( e -> {
+	    	try {
+	    		stage.setScene( new UserOverviewScene(stage).getScene() );
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+	    	
+	   
+	    	System.out.println("Set scene My Profile");
+	    });
+	    
+	    StickerExchange.setOnAction( e -> {
 //	    	Scene seScene = new StickerExchange(stage).getScene();
-//	    	stage.setScene(seScene);
-//	    	System.out.println("Set scene Sticker Exchange");
-//	    });
+	    	stage.setScene( new StickerExchange(stage).getScene());
+	    	System.out.println("Set scene Sticker Exchange");
+	    });
 	    
 	    // close the application
 //	    exitItem.setOnAction(e -> {
