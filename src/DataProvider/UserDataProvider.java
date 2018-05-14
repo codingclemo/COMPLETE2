@@ -65,19 +65,18 @@ public class UserDataProvider implements IUserDataProvider{
     	addUser("Flo", "a", 0);
     	
     	userTable.get("Moh").addStickerAvailable(1);
-    	userTable.get("Moh").addStickerAvailable(1);
-    	userTable.get("Moh").addStickerAvailable(3);
-    	userTable.get("Moh").addStickerAvailable(4);
-    	userTable.get("Moh").addStickerAvailable(4);
-    	userTable.get("Moh").addStickerAvailable(4);
+//    	userTable.get("Moh").addStickerAvailable(1);
+//    	userTable.get("Moh").addStickerAvailable(3);
+//    	userTable.get("Moh").addStickerAvailable(4);
+//    	userTable.get("Moh").addStickerAvailable(4);
+//    	userTable.get("Moh").addStickerAvailable(4);
+//    	userTable.get("Moh").addStickerAvailable(9);
     	
     	userTable.get("Albi").addStickerAvailable(1);
     	
-    	createStickerDB();
-
     }
     
-    private void createStickerDB() {
+    public void createStickerDB() {
     	stickerDB.add( new StickerTable(0, "Zero", "Placeholder", 0) );
     	stickerDB.add( new StickerTable(1, "Austria", "Alaba", 0) );
     	stickerDB.add( new StickerTable(2, "Austria", "Arnautovic", 0) );
@@ -96,7 +95,8 @@ public class UserDataProvider implements IUserDataProvider{
     	for (int i = 0; i < stickerArray.length; i++) {
     		if (stickerArray[i] != 0) {
     			StickerTable st = stickerDB.get(i);
-//    			st.setAmount(stickerArray[i]);
+//    			st.setAmount(99);
+    			st.setAmount(stickerArray[i]);  /// why is it doubled here?
     			stickerList.add(st);
   
     		}

@@ -88,6 +88,15 @@ public class LoginScene {
 				stage.setScene( new UserOverviewScene(stage).getScene());
 			    if (AppState.getInstance().isUserLoggedIn())
 			    	System.out.println("hes logged in...OMG");
+			    
+							int[] stickArray = AppState.getInstance().getUser().getStickersAvailable();
+							System.out.print("Start AvailabeStickersInDB: ");
+							for (int i = 0; i < stickArray.length; i++) {
+								if (stickArray[i] != 0)
+									System.out.print(stickArray[i] + " ");
+							}
+							System.out.print("\n");
+			    
 			}
 	    });
         

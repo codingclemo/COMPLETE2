@@ -54,9 +54,11 @@ public class CompleteMain extends Application {
 
     	AppState.getInstance().setDatabase(udp);
     	udp.createDummyData();
+    	udp.createStickerDB();
     	udp.printData();
 //    	udp.authenticateUser("Moh", "a");
     	
+		
         launch(args);
     }
 }

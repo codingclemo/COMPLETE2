@@ -28,6 +28,9 @@ public class User {
         this.password = password; // some hash magic needs to be added here
         this.userID = id;
         this.regionID = regionID;
+        for (int i = 0; i < stickersAvailable.length; i++) {
+			stickersAvailable[i] = stickersNeeded[i] = 0;
+		}
     }
 	
     //getters
@@ -95,14 +98,14 @@ public class User {
 	public int[] getStickersNeeded() {
 		return stickersNeeded;
 	}
-	
-	public void setStickersAvailable() {
-		AppState.getInstance().getDatabase().getDummyStickerData();
-	}
-	
-	public void setStickersNeeded() {
-		
-	}
+//	
+//	public void setStickersAvailable() {
+//		AppState.getInstance().getDatabase().getDummyStickerData();
+//	}
+//	
+//	public void setStickersNeeded() {
+//		
+//	}
 	
 	//TODO: Add getters and setters for optional fields (fn, ln, country...)
 

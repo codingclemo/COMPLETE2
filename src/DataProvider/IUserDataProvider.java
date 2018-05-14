@@ -12,7 +12,7 @@ public interface IUserDataProvider {
     public boolean authenticateUser(String username, String password);
     
     public void createDummyData();
-//    public void createDummyStickerData();
+    public void createStickerDB();
     public ObservableList<StickerTable> getDummyStickerData();
     public void removeSticker(int stickerID);  // needs refactoring
     public ObservableList<StickerTable> getObservableStickers(int[] stickerArray);

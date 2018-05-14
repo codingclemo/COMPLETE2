@@ -45,24 +45,12 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 public class UserOverviewScene {
-
-//	Stage UserStage = new Stage();
 	
 	private Scene scene;
 	private TableView<StickerTable> duplicatesTable;
 	private ArrayList<String> selectedDuplicateIDs = new ArrayList<String>();
 	private ArrayList<String> selectedRequiredIDs = new ArrayList<String>();
-	
-//	private Text stickerTextID = new Text();
-	
-//	public VBox rootPane;
-//	private HBox framePane;
-//	private VBox userInfo;
-//	private GridPane userDetails;
-//	private VBox userStatistics;
-//	private VBox interactionPane;
-	
-	
+
 	public UserOverviewScene(Stage stage) {
 		VBox rootPane = new VBox();
 		scene = new Scene(rootPane);
@@ -79,10 +67,7 @@ public class UserOverviewScene {
 					VBox viewListPane = new VBox();
 					VBox removeButtonPane = new VBox();
 		
-		
-					
-		// add textfield for adding Stickers
-		
+		// add textfield for adding Stickers	
 		TextField stickersTextField = new TextField();
 		stickersTextField.setPromptText("Enter Sticker ID numbers (i.e. 001, 035, 212, ..)");
 		HBox buttonPane = new HBox();
@@ -99,9 +84,21 @@ public class UserOverviewScene {
 					System.out.print( Integer.toString(inputArray[i]) + " ");
 					AppState.getInstance().getUser().addStickerAvailable(inputArray[i]);
 					
+					
 				}
 			}
 			System.out.print("\n");
+//			duplicatesTable.refresh();
+//			duplicatesTable.getColumns().get(0).setVisible(false);
+//			duplicatesTable.getColumns().get(0).setVisible(true);
+
+			System.out.print("\n");
+			int[] stickArray = AppState.getInstance().getUser().getStickersAvailable();
+			System.out.print("After pressing AvailabeStickersInDB: ");
+			for (int i = 0; i < stickArray.length; i++) {
+				if (stickArray[i] != 0)
+					System.out.print(stickArray[i] + " ");
+			}	
 		});
 		
 		// add user information to user Details
@@ -130,7 +127,6 @@ public class UserOverviewScene {
 		userDetails.setPadding(new Insets(50, 100, 50, 100));
 		
 		// add ListView to display Stickers that are available for trading
-		ListView<String> duplicateStickers = new ListView<String>();
 		ListView<String> requiredStickers = new ListView<String>();
 		
 		// show duplicate stickers
@@ -138,33 +134,15 @@ public class UserOverviewScene {
 		duplicatesLabel.setPadding(new Insets(0, 0, 5, 0));
 		
 		// add duplicates Table
-//		duplicatesTable = StickerTableGenerator.generateTable();		
-//		AppState.getInstance().getDatabase().createDummyStickerData();
-//		duplicatesTable.setItems(AppState.getInstance().getDatabase().getDummyStickerData());
-//		duplicatesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//		addListenersForTable(duplicatesTable);
-		
 		duplicatesTable = StickerTableGenerator.generateTable();
 		try {
 			User u = AppState.getInstance().getUser();
-			
 			UserDataProvider udp = (UserDataProvider) AppState.getInstance().getDatabase();
-//	    	udp.getObservableStickers(u.getStickersAvailable());
-//	    	AppState.getInstance().getDatabase().getObservableStickers(u.getStickersAvailable());
-
 			duplicatesTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(u.getStickersAvailable()));
-//			duplicatesTable.setItems( udp.getObservableStickers(u.getStickersAvailable()) );
-		} catch (NullPointerException e) {
-
-		}
+		} catch (NullPointerException e) {}
 		duplicatesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		addListenersForTable(duplicatesTable);
-		
-		
-		
-		
-		
-		
+
 		
 		// show required stickers
 		Label requiredLabel = new Label("My needs");
@@ -178,8 +156,7 @@ public class UserOverviewScene {
 		
 		// add remove Button
 		Button removeButton = new Button("Remove");
-		removeButtonPane.getChildren().add(removeButton);
-//		removeButtonPane.getChildren().add(stickerTextID);  
+		removeButtonPane.getChildren().add(removeButton); 
 		removeButtonPane.setAlignment(Pos.CENTER_RIGHT);
 		removeButtonPane.setPadding(new Insets(0, 0, 0, 20));
 		
@@ -199,9 +176,7 @@ public class UserOverviewScene {
 	
 //		removeButtonPane.setBackground(new Background ( new BackgroundFill(Color.BURLYWOOD, null, null)));
 		viewListPane.getChildren().addAll(duplicatesLabel, duplicatesTable, requiredLabel, requiredStickers);
-		
 		showPane.getChildren().addAll(viewListPane, removeButtonPane);
-		
 		interactionPane.getChildren().addAll(inputPane, showPane);
 		
 		userInfo.getChildren().add(userDetails);
@@ -232,7 +207,9 @@ public class UserOverviewScene {
 					selectedDuplicateIDs.clear();
 //					ArrayList<String> selectedIDs = new ArrayList<String>();
 					for (StickerTable row: selectedItems) {
+//						row.setAmount(i);
 						selectedDuplicateIDs.add( Integer.toString(row.getID()) );
+						
 					}
 					System.out.println(selectedDuplicateIDs);
 					
