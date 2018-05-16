@@ -29,7 +29,7 @@ public class Stickers {
 	
 	private ArrayList<Sticker> stickers = new ArrayList<>();
 	private int stickersCount = 0;
-	private static int stickersMax = 10;
+	private static int stickersMax = 682;
 	
 	public Stickers() {
 		

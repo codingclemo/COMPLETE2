@@ -1,5 +1,7 @@
 package Data;
 
+import java.util.ArrayList;
+
 public class User {
 	
 	private String username;
@@ -13,8 +15,11 @@ public class User {
 	private String City;
 	private String Country;
 	
-	private int[] stickersAvailable = new int[10];
-	private int[] stickersNeeded = new int[10];
+	private int[] stickersAvailable = new int[682];
+	private int[] stickersNeeded = new int[682];
+	
+	
+	private ArrayList<Integer> transactions = new ArrayList<>();
 	
 //	public User() {
 //        this.username = null; 
@@ -84,12 +89,12 @@ public class User {
 	}
     
     public void addStickerNeeded(int stickerID) {
-    	stickersAvailable[stickerID]++;
+    	stickersNeeded[stickerID]++;
     }
     
 	public void removeStickerNeeded(int stickerID) {
-		if (stickersAvailable[stickerID] > 0) {
-			this.stickersAvailable[stickerID]--;
+		if (stickersNeeded[stickerID] > 0) {
+			this.stickersNeeded[stickerID]--;
 		} else {
 			System.out.println("Stock of sticker No. " + stickerID +  " is already empty.");
 		}
@@ -98,18 +103,6 @@ public class User {
 	public int[] getStickersNeeded() {
 		return stickersNeeded;
 	}
-//	
-//	public void setStickersAvailable() {
-//		AppState.getInstance().getDatabase().getDummyStickerData();
-//	}
-//	
-//	public void setStickersNeeded() {
-//		
-//	}
-	
-	//TODO: Add getters and setters for optional fields (fn, ln, country...)
-
-
 
 
 }

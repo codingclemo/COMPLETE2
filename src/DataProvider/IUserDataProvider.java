@@ -2,6 +2,8 @@ package DataProvider;
 
 import Data.User;
 import Tables.StickerTable;
+import Tables.TransactionTable;
+import Tables.UserTable;
 import javafx.collections.ObservableList;
 
 public interface IUserDataProvider {
@@ -14,9 +16,13 @@ public interface IUserDataProvider {
     public void createDummyData();
     public void createStickerDB();
     public ObservableList<StickerTable> getDummyStickerData();
+    public String getStickerName(int ID);
     public void removeSticker(int stickerID);  // needs refactoring
     public ObservableList<StickerTable> getObservableStickers(int[] stickerArray);
+    public ObservableList<UserTable> getObservableUsers();
     
+    public void addTransaction(User Giver, User Taker, int stickerID);
+    public ObservableList<TransactionTable> getObservableTransactions(User u);
     
     public void printData();
 }
