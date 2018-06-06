@@ -8,9 +8,11 @@ import java.util.Scanner;
 
 import Data.AppState;
 import Data.User;
-import DataProvider.UserDataProvider;
+import DataProvider.mysqlDataProvider;
 import Tables.StickerTable;
 import Tables.StickerTableGenerator;
+import Tables.TransactionTable;
+import Tables.TransactionTableGenerator;
 import complete.CompleteMain;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -45,30 +47,40 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 public class UserOverviewScene {
-	
+
 	private Scene scene;
 	private TableView<StickerTable> duplicatesTable;
 	private TableView<StickerTable> requiredTable;
+	private TableView<TransactionTable> myTransactionsTable;
 	private ArrayList<String> selectedDuplicateIDs = new ArrayList<String>();
 	private ArrayList<String> selectedRequiredIDs = new ArrayList<String>();
+	private ArrayList<String> selectedTransactions = new ArrayList<String>();
+
+	private User currentUser;
 
 	public UserOverviewScene(Stage stage) {
 		VBox rootPane = new VBox();
 		scene = new Scene(rootPane);
 		MenuBar menuBar = new MainMenu(stage).getMenuBar();
 		((VBox) scene.getRoot()).getChildren().addAll(menuBar);
-		
+
 		HBox framePane = new HBox();
-			VBox userInfo = new VBox();
-				GridPane userDetails = new GridPane();
-				VBox userStatistics = new VBox();
-			VBox interactionPane = new VBox();
-				VBox inputPane = new VBox();
-				HBox showPane = new HBox();
-					VBox viewListPane = new VBox();
-					VBox removeButtonPane = new VBox();
-		
-		// add textfield for adding Stickers	
+		VBox userInfo = new VBox();
+		GridPane userDetails = new GridPane();
+		VBox userStatistics = new VBox();
+		VBox interactionPane = new VBox();
+		VBox inputPane = new VBox();
+		HBox showPane = new HBox();
+		VBox viewListPane = new VBox();
+		VBox removeButtonPane = new VBox();
+		VBox transactionsPane = new VBox();
+		HBox transButtonPane = new HBox();
+
+		currentUser = AppState.getInstance().getUser();
+
+		// framePane.setAlignment(Pos.CENTER);
+
+		// add textfield for adding Stickers
 		TextField stickersTextField = new TextField();
 		stickersTextField.setPromptText("Enter Sticker ID numbers (i.e. 001, 035, 212, ..)");
 		HBox buttonPane = new HBox();
@@ -76,54 +88,57 @@ public class UserOverviewScene {
 		Button addToRequired = new Button("Add to required");
 		buttonPane.getChildren().addAll(addToDuplicates, addToRequired);
 		inputPane.getChildren().addAll(stickersTextField, buttonPane);
-		inputPane.setPadding(new Insets(50,0,30,0));
-		
-		addToDuplicates.setOnAction( e -> {
+		inputPane.setPadding(new Insets(50, 0, 30, 0));
+
+		addToDuplicates.setOnAction(e -> {
 			int[] inputArray = getArrayFromInput(stickersTextField.getText());
 			for (int i = 0; i < inputArray.length; i++) {
-				if(inputArray[i] > 0 && inputArray[i] < 682 ) {    ///check if stickerID is valid
+				if (inputArray[i] > 0 && inputArray[i] < 682) { /// check if stickerID is valid
 					try {
-//						System.out.print( Integer.toString(inputArray[i]) + " ");
-						AppState.getInstance().getUser().addStickerAvailable(inputArray[i]);
-					} catch (IndexOutOfBoundsException e2) {}
+						// System.out.print( Integer.toString(inputArray[i]) + " ");
+						currentUser.addStickerAvailable(inputArray[i]);
+					} catch (IndexOutOfBoundsException e2) {
+					}
 				}
 			}
 			System.out.print("\n");
-			//get updated data from db
-			duplicatesTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(AppState.getInstance().getUser().getStickersAvailable()));
+			// get updated data from db
+			duplicatesTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersAvailable()));
 			duplicatesTable.refresh();
 
 			System.out.print("\n");
-			int[] stickArray = AppState.getInstance().getUser().getStickersAvailable();
+			int[] stickArray = currentUser.getStickersAvailable();
 			System.out.print("After pressing AvailabeStickersInDB: ");
 			for (int i = 0; i < stickArray.length; i++) {
 				if (stickArray[i] != 0)
 					System.out.print(stickArray[i] + " ");
-			}	
+			}
 		});
-		
-		addToRequired.setOnAction( e -> {
+
+		addToRequired.setOnAction(e -> {
 			int[] inputArray = getArrayFromInput(stickersTextField.getText());
 			for (int i = 0; i < inputArray.length; i++) {
-				if(inputArray[i] > 0 && inputArray[i] < 682 ) {    ///check if stickerID is valid
-					System.out.print( Integer.toString(inputArray[i]) + " ");
-					AppState.getInstance().getUser().addStickerNeeded(inputArray[i]);
+				if (inputArray[i] > 0 && inputArray[i] < 682) { /// check if stickerID is valid
+					System.out.print(Integer.toString(inputArray[i]) + " ");
+					currentUser.addStickerNeeded(inputArray[i]);
 				}
 			}
 			System.out.print("\n");
-			//get updated data from db
-			requiredTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(AppState.getInstance().getUser().getStickersNeeded()));
+			// get updated data from db
+			requiredTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersNeeded()));
 			requiredTable.refresh();
 
 			System.out.print("\n");
-			int[] stickArray = AppState.getInstance().getUser().getStickersNeeded();
+			int[] stickArray = currentUser.getStickersNeeded();
 			System.out.print("After pressing NeededStickersInDB: ");
 			for (int i = 0; i < stickArray.length; i++) {
 				if (stickArray[i] != 0)
 					System.out.print(stickArray[i] + " ");
-			}	
+			}
 		});
-		
+
 		// add user information to user Details
 		try {
 			User u = AppState.getInstance().getUser();
@@ -138,134 +153,172 @@ public class UserOverviewScene {
 				if (stickerArray[i] != 0) {
 					stickerList += i + " ";
 				}
-				
+
 			}
 			userDetails.add(new Text(stickerList), 0, 3);
-			
+
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 		}
 
 		userDetails.setMinWidth(100);
 		userDetails.setPadding(new Insets(50, 100, 50, 100));
-		
+
 		// show duplicate stickers
 		Label duplicatesLabel = new Label("My duplicates");
 		duplicatesLabel.setPadding(new Insets(0, 0, 5, 0));
-		
+
 		// add duplicates Table
 		duplicatesTable = StickerTableGenerator.generateTable();
 		try {
-			User u = AppState.getInstance().getUser();
-			UserDataProvider udp = (UserDataProvider) AppState.getInstance().getDatabase();
-			duplicatesTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(u.getStickersAvailable()));
-		} catch (NullPointerException e) {}
+			// User u = AppState.getInstance().getUser();
+			mysqlDataProvider udp = (mysqlDataProvider) AppState.getInstance().getDatabase();
+			duplicatesTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersAvailable()));
+		} catch (NullPointerException e) {
+		}
 		duplicatesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		duplicatesTable.setMinSize(400, 200); duplicatesTable.setMaxSize(800, 200);
+		duplicatesTable.setMinSize(350, 100);
+		duplicatesTable.setMaxSize(500, 150);
 		duplicatesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		addListenersForTable(duplicatesTable);
-		
-		
+
 		// add required Table
 		requiredTable = StickerTableGenerator.generateTable();
 		try {
-			User u = AppState.getInstance().getUser();
-			UserDataProvider udp = (UserDataProvider) AppState.getInstance().getDatabase();
-			System.out.println(" is this here?" + u.getStickersNeeded().toString());
-			requiredTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(u.getStickersNeeded()));
-		} catch (NullPointerException e) {}
+			// User u = AppState.getInstance().getUser();
+			mysqlDataProvider udp = (mysqlDataProvider) AppState.getInstance().getDatabase();
+			System.out.println(" is this here?" + currentUser.getStickersNeeded().toString());
+			requiredTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersNeeded()));
+		} catch (NullPointerException e) {
+		}
 		requiredTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		requiredTable.setMinSize(400, 200); requiredTable.setMaxSize(800, 200);
+		requiredTable.setMinSize(350, 100);
+		requiredTable.setMaxSize(500, 150);
 		requiredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		addListenersForTable(requiredTable);
-		
 		Label requiredLabel = new Label("My needs");
 		requiredLabel.setPadding(new Insets(20, 0, 5, 0));
-		
+
+		// ArrayList<TransactionTable> transDB = AppState.getInstance().getDatabase().
+
+		myTransactionsTable = TransactionTableGenerator.generateTable();
+		ObservableList<TransactionTable> transactionsDB = FXCollections.observableArrayList();
+		try {
+			// transactionsDB =
+			// AppState.getInstance().getDatabase().getObservableTransactions(currentUser);
+			myTransactionsTable.setItems(transactionsDB);
+			myTransactionsTable.setItems(AppState.getInstance().getDatabase().getObservableTransactions(currentUser));
+		} catch (NullPointerException e) {
+		}
+		myTransactionsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		myTransactionsTable.setMinSize(350, 100);
+		myTransactionsTable.setMaxSize(500, 150);
+		myTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		// myTransactionsTable.getColumns().remove(0); // hide transactionID
+		Label myTransactionsLabel = new Label("My trades:");
+
 		// add remove Button
 		Button removeButtonAvailable = new Button("Remove");
 		Button removeButtonNeeded = new Button("Remove");
-		removeButtonPane.getChildren().addAll(removeButtonAvailable, removeButtonNeeded); 
+		removeButtonPane.getChildren().addAll(removeButtonAvailable, removeButtonNeeded);
 		removeButtonPane.setAlignment(Pos.CENTER_RIGHT);
 		removeButtonPane.setPadding(new Insets(0, 0, 0, 20));
-		
-		
-		removeButtonAvailable.setOnAction( e -> {
+
+		removeButtonAvailable.setOnAction(e -> {
 			int[] inputArray = getArrayFromArrayList(selectedDuplicateIDs);
-			
+
 			for (int i = 0; i < inputArray.length; i++) {
-				if(inputArray[i] > 0 && inputArray[i] < 682 ) {    ///check if stickerID is valid
-					System.out.print( Integer.toString(inputArray[i]) + " ");
-					AppState.getInstance().getUser().removeStickerAvailable(inputArray[i]);
+				if (inputArray[i] > 0 && inputArray[i] < 682) { /// check if stickerID is valid
+					System.out.print(Integer.toString(inputArray[i]) + " ");
+					currentUser.removeStickerAvailable(inputArray[i]);
 				}
 			}
 			System.out.print("\n");
-			//get updated data from db
-			duplicatesTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(AppState.getInstance().getUser().getStickersAvailable()));
+			// get updated data from db
+			duplicatesTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersAvailable()));
 			duplicatesTable.refresh();
 
 			System.out.print("\n");
-			int[] stickArray = AppState.getInstance().getUser().getStickersAvailable();
+			int[] stickArray = currentUser.getStickersAvailable();
 			System.out.print("After pressing AvailabeStickersInDB: ");
 			for (int i = 0; i < stickArray.length; i++) {
 				if (stickArray[i] != 0)
 					System.out.print(stickArray[i] + " ");
-			}	
+			}
 		});
-		
-		removeButtonNeeded.setOnAction( e -> {
+
+		// add remove Button
+		removeButtonNeeded.setOnAction(e -> {
 			int[] inputArray = getArrayFromArrayList(selectedRequiredIDs);
-			
+
 			for (int i = 0; i < inputArray.length; i++) {
-				if(inputArray[i] > 0 && inputArray[i] < 682 ) {    ///check if stickerID is valid
-					System.out.print( Integer.toString(inputArray[i]) + " ");
-					AppState.getInstance().getUser().removeStickerNeeded(inputArray[i]);
+				if (inputArray[i] > 0 && inputArray[i] < 682) { /// check if stickerID is valid
+					System.out.print(Integer.toString(inputArray[i]) + " ");
+					currentUser.removeStickerNeeded(inputArray[i]);
 				}
 			}
 			System.out.print("\n");
-			//get updated data from db
-			requiredTable.setItems(AppState.getInstance().getDatabase().getObservableStickers(AppState.getInstance().getUser().getStickersNeeded()));
+			// get updated data from db
+			requiredTable.setItems(
+					AppState.getInstance().getDatabase().getObservableStickers(currentUser.getStickersNeeded()));
 			requiredTable.refresh();
 
 			System.out.print("\n");
-			int[] stickArray = AppState.getInstance().getUser().getStickersNeeded();
+			int[] stickArray = currentUser.getStickersNeeded();
 			System.out.print("After pressing NeededStickersInDB: ");
 			for (int i = 0; i < stickArray.length; i++) {
 				if (stickArray[i] != 0)
 					System.out.print(stickArray[i] + " ");
-			}	
+			}
 		});
-		
-		
-	
-//		removeButtonPane.setBackground(new Background ( new BackgroundFill(Color.BURLYWOOD, null, null)));
+
+		// add accept Button
+		Button acceptButton = new Button("Accept Trade");
+		acceptButton.setOnAction(e -> {
+			// TransactionTable tt = AppState.getInstance().getDatabase().// get transaction
+			for (int i = 0; i < selectedTransactions.size(); i++) {
+
+			}
+		});
+
+		// add decline Button
+		Button declineButton = new Button("Decline Trade");
+
+		// removeButtonPane.setBackground(new Background ( new
+		// BackgroundFill(Color.BURLYWOOD, null, null)));
 		HBox duplicatesPane = new HBox();
 		HBox requiredPane = new HBox();
 		duplicatesPane.getChildren().addAll(duplicatesTable, removeButtonAvailable);
 		duplicatesPane.setAlignment(Pos.CENTER);
 		requiredPane.getChildren().addAll(requiredTable, removeButtonNeeded);
 		requiredPane.setAlignment(Pos.CENTER);
-		
+
 		viewListPane.getChildren().addAll(duplicatesLabel, duplicatesPane, requiredLabel, requiredPane);
-//		viewListPane.getChildren().addAll(duplicatesLabel, duplicatesTable, requiredLabel, requiredTable);
+		// viewListPane.getChildren().addAll(duplicatesLabel, duplicatesTable,
+		// requiredLabel, requiredTable);
 		showPane.getChildren().addAll(viewListPane, removeButtonPane);
 		interactionPane.getChildren().addAll(inputPane, showPane);
-		
-		userInfo.getChildren().add(userDetails);
-		userInfo.getChildren().add(userStatistics);
-		framePane.getChildren().add(userInfo);
-		framePane.getChildren().add(interactionPane);
+		transButtonPane.getChildren().addAll(acceptButton, declineButton);
+
+		userInfo.getChildren().addAll(userDetails, userStatistics);
+		framePane.getChildren().addAll(userInfo, interactionPane, transactionsPane);
+		transactionsPane.getChildren().addAll(myTransactionsLabel, myTransactionsTable, transButtonPane);
+		transactionsPane.setAlignment(Pos.CENTER);
 
 		rootPane.getChildren().add(framePane);
-        stage.setMinHeight(800);
-        stage.setMinWidth(1200);
-        stage.setResizable(false);
+		stage.setMinHeight(800);
+		stage.setMinWidth(1400);
+		stage.setResizable(false);
+		stage.setTitle("COMPLETE");
 	}
 
 	public Scene getScene() {
 		return scene;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void addListenersForTable(TableView<StickerTable> stTable) {
 		stTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
@@ -273,16 +326,16 @@ public class UserOverviewScene {
 			public void changed(ObservableValue<?> observableValue, Object oldValue, Object newValue) {
 				if (stTable.getSelectionModel().getSelectedItem() != null) {
 					TableViewSelectionModel<StickerTable> selection = stTable.getSelectionModel();
-					
-//					StickerTable st = (StickerTable) selection.getSelectedItem();
+
+					// StickerTable st = (StickerTable) selection.getSelectedItem();
 					ObservableList<StickerTable> selectedItems = stTable.getSelectionModel().getSelectedItems();
 					selectedDuplicateIDs.clear();
 					selectedRequiredIDs.clear(); // was added later
-//					ArrayList<String> selectedIDs = new ArrayList<String>();
-					for (StickerTable row: selectedItems) {
-//						row.setAmount(i);
-						selectedDuplicateIDs.add( Integer.toString(row.getID()) );
-						selectedRequiredIDs.add( Integer.toString(row.getID()) ); // was added later
+					// ArrayList<String> selectedIDs = new ArrayList<String>();
+					for (StickerTable row : selectedItems) {
+						// row.setAmount(i);
+						selectedDuplicateIDs.add(Integer.toString(row.getID()));
+						selectedRequiredIDs.add(Integer.toString(row.getID())); // was added later
 					}
 					System.out.println("DupID:" + selectedDuplicateIDs);
 					System.out.println("ReqID:" + selectedDuplicateIDs);// was added later
@@ -290,7 +343,27 @@ public class UserOverviewScene {
 			}
 		});
 	}
-	
+
+	@SuppressWarnings("unused")
+	private void addListenersForTransaction(TableView<TransactionTable> ttTable) {
+		ttTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> observableValue, Object oldValue, Object newValue) {
+				if (ttTable.getSelectionModel().getSelectedItem() != null) {
+					TableViewSelectionModel<TransactionTable> selection = ttTable.getSelectionModel();
+
+					ObservableList<TransactionTable> selectedItems = ttTable.getSelectionModel().getSelectedItems();
+					selectedTransactions.clear();
+
+					for (TransactionTable row : selectedItems) {
+						// row.setAmount(i);
+						selectedTransactions.add(Integer.toString(row.getID()));
+					}
+				}
+			}
+		});
+	}
+
 	private int[] getArrayFromInput(String s) {
 		int[] result = new int[682];
 		int i = 0;
@@ -301,13 +374,13 @@ public class UserOverviewScene {
 		while (scanner.hasNextInt()) {
 			dummy = scanner.nextInt();
 			if (dummy != 0 && dummy <= 682) { // check here for in bounds of Sticker Array
-			    result[i] = dummy;
-			    i++;				
+				result[i] = dummy;
+				i++;
 			}
 		}
 		return result;
 	};
-	
+
 	private int[] getArrayFromArrayList(ArrayList<String> inputArray) {
 		int[] result = new int[682];
 		for (int i = 0; i < inputArray.size(); i++) {

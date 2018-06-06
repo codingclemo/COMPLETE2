@@ -1,13 +1,15 @@
 package Data;
 
-import DataProvider.IUserDataProvider;
+//import DataProvider.IUserDataProvider;
+import DataProvider.ImysqlDataProvider;
+import DataProvider.mysqlDataProvider;
 
 public final class AppState {
-
+	
 	 private static final AppState instance = new AppState();
 	 
 	    private User user;
-	    private IUserDataProvider db; 
+	    private ImysqlDataProvider db; 
 	    
 	    public static AppState getInstance() {
 	        return instance;
@@ -27,11 +29,11 @@ public final class AppState {
 	        return (user != null);
 	    }
 	    
-	    public void setDatabase (IUserDataProvider db) {
-	        this.db = db;
+	    public void setDatabase (mysqlDataProvider mysqldp) {
+	        this.db = mysqldp;
 	    }
 	    
-	    public IUserDataProvider getDatabase() {
+	    public ImysqlDataProvider getDatabase() {
 	        return db;
 	    }
 }

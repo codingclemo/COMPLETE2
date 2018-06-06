@@ -4,6 +4,7 @@ import javafx.scene.text.Text;
 import Data.AppState;
 import Data.User;
 import DataProvider.IUserDataProvider;
+import DataProvider.ImysqlDataProvider;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -52,7 +53,6 @@ public class LoginScene {
     
 	public LoginScene(Stage stage) {
 		
-//		window = stage;
 		VBox rootPane = new VBox();
 		VBox welcomePane = new VBox();
         VBox contentPane = new VBox();  // probably there is a nicer solution to this
@@ -61,30 +61,23 @@ public class LoginScene {
         scene = new Scene(rootPane);		
         
         Text t = new Text();
-        t.setText("Welcome to COMPLETE");
-//	        contentPane.add(t, 0, 2);
         contentPane.getChildren().add(t);
         contentPane.setMinSize(400, 100);
         
-//        welcomePane = new VBox();
         welcomePane.setId("welcome-pane");
         welcomePane.getChildren().addAll(contentPane);
         welcomePane.setAlignment(Pos.CENTER);
-//        welcomePane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
-
 	
 		// add buttons
 		loginButton = createTextButton("button-login", "Login");
-//        loginButton.setOnAction(this);
 		loginButton.setDefaultButton(true);
 	    loginButton.setOnAction( e -> {
 	    	System.out.println("Login button pressed");
-			IUserDataProvider db = AppState.getInstance().getDatabase();
+			ImysqlDataProvider db = AppState.getInstance().getDatabase();
 			
 			if (db.authenticateUser(usernameTextField.getText(), passwordTextField.getText())) {
 				User u = db.getUserByUsername(usernameTextField.getText());
 				AppState.getInstance().setUser(u);
-//				UserOverview ov = new UserOverview(stage);
 				stage.setScene( new UserOverviewScene(stage).getScene());
 			    if (AppState.getInstance().isUserLoggedIn())
 			    	System.out.println("hes logged in...OMG");
@@ -104,7 +97,7 @@ public class LoginScene {
         registerButton = createTextButton("button-register", "Register");   
         registerButton.setOnAction( e -> {
 	    	System.out.println("Login button pressed");
-			IUserDataProvider db = AppState.getInstance().getDatabase();
+			ImysqlDataProvider db = AppState.getInstance().getDatabase();
 			
 			stage.setScene( new RegisterScene(stage).getScene());
 	    });
@@ -154,6 +147,7 @@ public class LoginScene {
 //        LoginStage.setResizable(false);
 //        
 //        window = stage;
+		stage.setTitle("COMPLETE - Login");
 	}
 	
 	

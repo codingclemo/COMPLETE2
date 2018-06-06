@@ -5,6 +5,7 @@ import javafx.scene.text.Text;
 import Data.AppState;
 import Data.User;
 import DataProvider.IUserDataProvider;
+import DataProvider.ImysqlDataProvider;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -64,7 +65,7 @@ public class RegisterScene{
         GridPane headerPane = new GridPane();  // probably there is a nicer solution to this
         headerPane.setId("header-pane");
         headerPane.setAlignment(Pos.CENTER);
-        headerPane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
+//        headerPane.setBackground(new Background ( new BackgroundFill(Color.AQUA, null, null)));
         
         Text t = new Text();
         t.setText("Registration - Onboard the Panini exchange train");
@@ -74,7 +75,7 @@ public class RegisterScene{
         GridPane registrationForm = new GridPane();
         registrationForm.setId("registration-form");
         registrationForm.setMinHeight(50);
-        registrationForm.setBackground(new Background ( new BackgroundFill(Color.BEIGE, null, null)));
+//        registrationForm.setBackground(new Background ( new BackgroundFill(Color.BEIGE, null, null)));
     
         Label fnLabel = new Label("First name");
         fnTextField = new TextField ();
@@ -139,7 +140,7 @@ public class RegisterScene{
         nextButton.setOnAction( e -> {
 			System.out.println("Next button pressed");
 			
-			IUserDataProvider db = AppState.getInstance().getDatabase();
+			ImysqlDataProvider db = AppState.getInstance().getDatabase();
 			
 			// check if user exists
 			// if user exists -> error
@@ -179,9 +180,9 @@ public class RegisterScene{
         buttonsPane.getChildren().add(backButton);
         buttonsPane.getChildren().add(nextButton);
         buttonsPane.setSpacing(50);
-        buttonsPane.setPrefSize(400, 70);
-        buttonsPane.setAlignment(Pos.BOTTOM_CENTER);
-        buttonsPane.setBackground(new Background ( new BackgroundFill(Color.BLUEVIOLET, null, null)));
+        buttonsPane.setPrefSize(300, 70);
+        buttonsPane.setAlignment(Pos.CENTER);
+//        buttonsPane.setBackground(new Background ( new BackgroundFill(Color.BLUEVIOLET, null, null)));
         
         rootPane.setId("registration-pane");
         rootPane.getChildren().addAll(headerPane);
@@ -193,7 +194,8 @@ public class RegisterScene{
         scene = new Scene(rootPane);
         registrationStage.setResizable(false);
         registrationStage.setScene(scene);
-		
+        stage.setTitle("COMPLETE - Register");
+        
 	}
 	
 	

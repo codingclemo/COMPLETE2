@@ -1,5 +1,6 @@
 package DataProvider;
 
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,7 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class UserDataProvider implements IUserDataProvider{
-	
+
 	private int userID = 0;
 	private TreeMap<String, User> userTable = new TreeMap<>();
 	private ObservableList<StickerTable> dummyStickerData;  // to load in TableView for Stickers
@@ -96,7 +97,7 @@ public class UserDataProvider implements IUserDataProvider{
     	userTable.get("Clemens").addStickerNeeded(3);
     	userTable.get("Clemens").addStickerNeeded(8);
     	
-//    	transactionsDB.add( new TransactionTable(666, "moh", "albi", 2, this.getStickerName(2)));
+    	transactionsDB.add( new TransactionTable(666, "moh", "albi", 2, this.getStickerName(2)));
     }
     
     public void createStickerDB() {

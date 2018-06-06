@@ -4,5 +4,6 @@
 	<classpathentry excluding="gui/UserOverview.java|gui/RegistrationStage.java|gui/LoginDialog.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="css"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.45-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
